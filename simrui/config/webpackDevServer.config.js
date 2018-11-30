@@ -9,8 +9,90 @@ const paths = require('./paths');
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 const host = process.env.HOST || '0.0.0.0';
 
+const urlHost = 'http://localhost:3000/';
+const apiurlHost = 'http://localhost:57890/api/v1/';
+
 module.exports = function(proxy, allowedHost) {
   return {
+    externals: {
+      // my custom config
+      Config: JSON.stringify({
+        url: {
+            root: '/',
+            book: '/book/',
+            photo: '/photo/',
+            video: '/video/',
+            pathofexile: '/pathofexile/',
+            chat: '/chat/',
+            author: '/author/',
+            siberia: '/siberia/',
+            siberia_createEnvironment: '/siberia/create/',
+            siberia_editEnvironment: '/siberia/edit/',
+        },
+        apiurl: {
+            book: {
+                get: apiurlHost + 'book/get',
+                filter: apiurlHost + 'book/filter'
+            },
+            author: {
+                get: apiurlHost + 'author/get',
+                filter: apiurlHost + 'author/filter'
+            },
+            user: {
+                get: apiurlHost + 'user/get',
+                filter: apiurlHost + 'user/filter'
+            },
+            system: {
+                version: apiurlHost + 'system/version'
+            },
+            siberia: {
+                get: apiurlHost + 'siberia/get',
+                filter: apiurlHost + 'siberia/filter',
+                add: apiurlHost + 'siberia/add',
+                update: apiurlHost + 'siberia/update',
+                delete: apiurlHost + 'siberia/delete',
+            },
+        },
+        bootstrapTableOptions: {
+            sizePerPageList: [
+                {
+                    text: '8',
+                    value: 8
+                },
+                {
+                    text: '16',
+                    value: 16
+                },
+                {
+                    text: '32',
+                    value: 32
+                }
+            ],
+            pageStartIndex: 1,
+            paginationSize: 7,
+            prePageText: 'Prev',
+            nextPageText: 'Next',
+            firstPageText: 'First',
+            lastPageText: 'Last',
+            nextPageTitle: 'First page',
+            prePageTitle: 'Pre page',
+            firstPageTitle: 'Next page',
+            lastPageTitle: 'Last page',
+            showTotal: true,
+            alwaysShowAllBtns: true, // Always show next and previous button
+            // paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
+            // hideSizePerPage: true, // You can hide the dropdown for sizePerPage
+            // withFirstAndLast: false, // Hide the going to First and Last page button
+            expandRowBgColor: '$normalBgColor',
+        },
+        defaultHttpRequestHeaders: {
+            'Content-Type': 'application/json',
+            'Content-Encoding': 'utf-8',
+            'Accept': 'application/json',
+            'Accept-Charset': 'utf-8',
+        }
+      })
+    },
     // WebpackDevServer 2.4.3 introduced a security fix that prevents remote
     // websites from potentially accessing local content through DNS rebinding:
     // https://github.com/webpack/webpack-dev-server/issues/887
